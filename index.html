@@ -1,1325 +1,899 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QuickSort — Simulasi Interaktif</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --bg: #060a12;
-        --surface: #0d1420;
-        --card: #111827;
-        --border: #1a2540;
-        --accent: #38bdf8;
-        --accent2: #818cf8;
-        --accent3: #34d399;
-        --warn: #fb923c;
-        --danger: #f87171;
-        --text: #e2e8f0;
-        --muted: #4b6080;
-        --pivot-color: #fb923c;
-        --left-color: #34d399;
-        --right-color: #818cf8;
-        --sorted-color: #38bdf8;
-        --inactive-color: #1e2d45;
-      }
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        font-family: "Sora", sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        min-height: 100vh;
-      }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RadixSort — Simulasi Interaktif</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060a12;
+  --surface: #0d1420;
+  --card: #111827;
+  --border: #1a2540;
+  --accent: #a78bfa;
+  --accent2: #f472b6;
+  --accent3: #34d399;
+  --warn: #fb923c;
+  --danger: #f87171;
+  --text: #e2e8f0;
+  --muted: #4b6080;
 
-      /* HEADER */
-      header {
-        padding: 2.5rem 2rem 2rem;
-        text-align: center;
-        background: linear-gradient(180deg, #0a0f1e 0%, var(--bg) 100%);
-        border-bottom: 1px solid var(--border);
-        position: relative;
-      }
-      header::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(
-          ellipse 70% 50% at 50% -10%,
-          rgba(56, 189, 248, 0.1),
-          transparent
-        );
-        pointer-events: none;
-      }
-      .header-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(56, 189, 248, 0.08);
-        border: 1px solid rgba(56, 189, 248, 0.2);
-        color: var(--accent);
-        font-family: "JetBrains Mono", monospace;
-        font-size: 0.7rem;
-        letter-spacing: 0.12em;
-        padding: 0.3rem 0.9rem;
-        border-radius: 99px;
-        margin-bottom: 1rem;
-        text-transform: uppercase;
-      }
-      h1 {
-        font-size: clamp(1.8rem, 4vw, 2.8rem);
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        background: linear-gradient(135deg, #fff 20%, var(--accent) 80%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-      header p {
-        color: var(--muted);
-        margin-top: 0.4rem;
-        font-size: 0.9rem;
-      }
+  --digit-0: #f87171;
+  --digit-1: #fb923c;
+  --digit-2: #fbbf24;
+  --digit-3: #34d399;
+  --digit-4: #38bdf8;
+  --digit-5: #818cf8;
+  --digit-6: #a78bfa;
+  --digit-7: #f472b6;
+  --digit-8: #e879f9;
+  --digit-9: #94a3b8;
+  --sorted-color: #34d399;
+  --active-color: #a78bfa;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
 
-      /* TABS */
-      .tabs {
-        display: flex;
-        justify-content: center;
-        gap: 0.5rem;
-        padding: 1.5rem 1rem 0;
-        flex-wrap: wrap;
-      }
-      .tab-btn {
-        padding: 0.55rem 1.4rem;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: var(--surface);
-        color: var(--muted);
-        font-family: "Sora", sans-serif;
-        font-size: 0.82rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-      .tab-btn:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-      }
-      .tab-btn.active {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: var(--bg);
-      }
+header {
+  padding: 2.5rem 2rem 2rem;
+  text-align: center;
+  background: linear-gradient(180deg, #0a0810 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(167,139,250,.12), transparent);
+  pointer-events: none;
+}
+.header-badge {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: rgba(167,139,250,.08);
+  border: 1px solid rgba(167,139,250,.25);
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .7rem; letter-spacing: .12em;
+  padding: .3rem .9rem; border-radius: 99px;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  background: linear-gradient(135deg, #fff 20%, var(--accent) 80%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+header p { color: var(--muted); margin-top: .4rem; font-size: .9rem; }
 
-      /* MAIN */
-      main {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 1.5rem 1rem 3rem;
-      }
+.tabs {
+  display: flex; justify-content: center; gap: .5rem;
+  padding: 1.5rem 1rem 0;
+  flex-wrap: wrap;
+}
+.tab-btn {
+  padding: .55rem 1.4rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-family: 'Sora', sans-serif;
+  font-size: .82rem; font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+}
+.tab-btn:hover { border-color: var(--accent); color: var(--accent); }
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
 
-      .sim-panel {
-        display: none;
-      }
-      .sim-panel.active {
-        display: block;
-      }
+main { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
 
-      /* CONTROL BAR */
-      .controls {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-        padding: 1rem 1.25rem;
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-      }
-      .ctrl-label {
-        font-size: 0.75rem;
-        color: var(--muted);
-        font-weight: 600;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        white-space: nowrap;
-      }
-      input[type="text"] {
-        flex: 1;
-        min-width: 140px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 7px;
-        color: var(--text);
-        font-family: "JetBrains Mono", monospace;
-        font-size: 0.85rem;
-        padding: 0.5rem 0.85rem;
-        outline: none;
-        transition: border-color 0.2s;
-      }
-      input[type="text"]:focus {
-        border-color: var(--accent);
-      }
-      .btn {
-        padding: 0.5rem 1.1rem;
-        border-radius: 7px;
-        border: 1px solid;
-        font-family: "Sora", sans-serif;
-        font-size: 0.82rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        white-space: nowrap;
-      }
-      .btn-primary {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: var(--bg);
-      }
-      .btn-primary:hover {
-        filter: brightness(1.15);
-      }
-      .btn-secondary {
-        background: transparent;
-        border-color: var(--border);
-        color: var(--muted);
-      }
-      .btn-secondary:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-      }
-      .btn-warn {
-        background: rgba(251, 146, 60, 0.15);
-        border-color: rgba(251, 146, 60, 0.4);
-        color: var(--warn);
-      }
-      .btn-warn:hover {
-        background: rgba(251, 146, 60, 0.25);
-      }
-      .speed-wrap {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      input[type="range"] {
-        -webkit-appearance: none;
-        width: 80px;
-        height: 4px;
-        background: var(--border);
-        border-radius: 2px;
-        outline: none;
-      }
-      input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background: var(--accent);
-        cursor: pointer;
-      }
+.sim-panel { display: none; }
+.sim-panel.active { display: block; }
 
-      /* ARRAY VIZ */
-      .array-stage {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        min-height: 160px;
-      }
-      .stage-label {
-        font-size: 0.72rem;
-        font-weight: 600;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--muted);
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .stage-label::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: var(--border);
-      }
+.controls {
+  display: flex; align-items: center; gap: .75rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+.ctrl-label { font-size: .75rem; color: var(--muted); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+input[type="text"] {
+  flex: 1; min-width: 140px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .85rem;
+  padding: .5rem .85rem;
+  outline: none;
+  transition: border-color .2s;
+}
+input[type="text"]:focus { border-color: var(--accent); }
+.btn {
+  padding: .5rem 1.1rem;
+  border-radius: 7px;
+  border: 1px solid;
+  font-family: 'Sora', sans-serif;
+  font-size: .82rem; font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.btn-primary:hover { filter: brightness(1.15); }
+.btn-secondary { background: transparent; border-color: var(--border); color: var(--muted); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.btn-warn { background: rgba(251,146,60,.15); border-color: rgba(251,146,60,.4); color: var(--warn); }
+.btn-warn:hover { background: rgba(251,146,60,.25); }
+.speed-wrap { display: flex; align-items: center; gap: .5rem; }
+input[type="range"] {
+  -webkit-appearance: none; width: 80px; height: 4px;
+  background: var(--border); border-radius: 2px; outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px;
+  border-radius: 50%; background: var(--accent); cursor: pointer;
+}
 
-      .bar-container {
-        display: flex;
-        align-items: flex-end;
-        gap: 4px;
-        height: 120px;
-        padding-top: 0.5rem;
-      }
-      .bar {
-        flex: 1;
-        border-radius: 5px 5px 0 0;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        min-width: 20px;
-        cursor: default;
-      }
-      .bar::after {
-        content: attr(data-val);
-        position: absolute;
-        bottom: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-family: "JetBrains Mono", monospace;
-        font-size: 0.65rem;
-        font-weight: 700;
-        color: var(--muted);
-        white-space: nowrap;
-      }
-      .bar.b-default {
-        background: linear-gradient(180deg, #1e3a5f, #162840);
-        border: 1px solid #1e3a5f;
-      }
-      .bar.b-pivot {
-        background: linear-gradient(180deg, var(--pivot-color), #c2612a);
-        border: 1px solid var(--pivot-color);
-        box-shadow: 0 0 12px rgba(251, 146, 60, 0.4);
-      }
-      .bar.b-left {
-        background: linear-gradient(180deg, var(--left-color), #22966a);
-        border: 1px solid var(--left-color);
-      }
-      .bar.b-right {
-        background: linear-gradient(180deg, var(--right-color), #5a67d8);
-        border: 1px solid var(--right-color);
-      }
-      .bar.b-sorted {
-        background: linear-gradient(180deg, var(--sorted-color), #0d8ab8);
-        border: 1px solid var(--sorted-color);
-        box-shadow: 0 0 8px rgba(56, 189, 248, 0.25);
-      }
-      .bar.b-comparing {
-        background: linear-gradient(180deg, #fcd34d, #b45309);
-        border: 1px solid #fcd34d;
-        box-shadow: 0 0 12px rgba(252, 211, 77, 0.4);
-      }
+/* ARRAY BARS */
+.array-stage {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  min-height: 170px;
+}
+.stage-label {
+  font-size: .72rem; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: .5rem;
+}
+.stage-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-      /* LEGEND */
-      .legend {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        padding: 0.75rem 1.25rem;
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        margin-bottom: 1rem;
-      }
-      .leg {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        font-size: 0.75rem;
-        color: var(--muted);
-      }
-      .leg-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 3px;
-        flex-shrink: 0;
-      }
+.bar-container {
+  display: flex; align-items: flex-end;
+  gap: 5px;
+  height: 120px;
+  padding-top: .5rem;
+  padding-bottom: 22px;
+}
+.bar {
+  flex: 1;
+  border-radius: 5px 5px 0 0;
+  transition: all .35s cubic-bezier(.4,0,.2,1);
+  position: relative;
+  min-width: 22px;
+  cursor: default;
+}
+.bar::after {
+  content: attr(data-val);
+  position: absolute;
+  bottom: -20px;
+  left: 50%; transform: translateX(-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .65rem;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.bar.b-default { background: linear-gradient(180deg, #2a1a4e, #1a0d38); border: 1px solid #2a1a4e; }
+.bar.b-active  { background: linear-gradient(180deg, var(--active-color), #6d4fd4); border: 1px solid var(--active-color); box-shadow: 0 0 14px rgba(167,139,250,.4); }
+.bar.b-sorted  { background: linear-gradient(180deg, var(--sorted-color), #1a8a5e); border: 1px solid var(--sorted-color); box-shadow: 0 0 8px rgba(52,211,153,.25); }
+.bar.b-digit-0 { background: linear-gradient(180deg, var(--digit-0), #a33); border: 1px solid var(--digit-0); }
+.bar.b-digit-1 { background: linear-gradient(180deg, var(--digit-1), #b25308); border: 1px solid var(--digit-1); }
+.bar.b-digit-2 { background: linear-gradient(180deg, var(--digit-2), #a07208); border: 1px solid var(--digit-2); }
+.bar.b-digit-3 { background: linear-gradient(180deg, var(--digit-3), #1a7a50); border: 1px solid var(--digit-3); }
+.bar.b-digit-4 { background: linear-gradient(180deg, var(--digit-4), #0e7ab0); border: 1px solid var(--digit-4); }
+.bar.b-digit-5 { background: linear-gradient(180deg, var(--digit-5), #4a52b8); border: 1px solid var(--digit-5); }
+.bar.b-digit-6 { background: linear-gradient(180deg, var(--digit-6), #7b5cd4); border: 1px solid var(--digit-6); }
+.bar.b-digit-7 { background: linear-gradient(180deg, var(--digit-7), #b83080); border: 1px solid var(--digit-7); }
+.bar.b-digit-8 { background: linear-gradient(180deg, var(--digit-8), #a830c8); border: 1px solid var(--digit-8); }
+.bar.b-digit-9 { background: linear-gradient(180deg, var(--digit-9), #5a7080); border: 1px solid var(--digit-9); }
 
-      /* LOG */
-      .log-box {
-        background: #060a12;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 1rem 1.25rem;
-        font-family: "JetBrains Mono", monospace;
-        font-size: 0.78rem;
-        max-height: 200px;
-        overflow-y: auto;
-        margin-bottom: 1rem;
-      }
-      .log-box::-webkit-scrollbar {
-        width: 4px;
-      }
-      .log-box::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      .log-box::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: 2px;
-      }
-      .log-entry {
-        padding: 0.2rem 0;
-        border-bottom: 1px solid rgba(26, 37, 64, 0.5);
-      }
-      .log-entry:last-child {
-        border-bottom: none;
-      }
-      .log-step {
-        color: var(--muted);
-      }
-      .log-pivot {
-        color: var(--pivot-color);
-      }
-      .log-left {
-        color: var(--left-color);
-      }
-      .log-right {
-        color: var(--right-color);
-      }
-      .log-sorted {
-        color: var(--sorted-color);
-      }
-      .log-done {
-        color: var(--accent3);
-        font-weight: 700;
-      }
+/* BUCKET DISPLAY */
+.buckets-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.buckets-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+}
+.bucket {
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: .4rem .3rem;
+  min-height: 70px;
+  transition: all .3s;
+}
+.bucket-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .7rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: .4rem;
+  padding-bottom: .3rem;
+  border-bottom: 1px solid var(--border);
+}
+.bucket-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  text-align: center;
+  padding: .2rem 0;
+  border-radius: 4px;
+  margin-bottom: 2px;
+  transition: all .3s;
+  font-weight: 700;
+}
+.bucket.active-bucket { border-color: var(--accent); background: rgba(167,139,250,.06); }
 
-      /* STATS */
-      .stats-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 0.75rem;
-        margin-bottom: 1rem;
-      }
-      .stat-card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 0.85rem 1rem;
-        text-align: center;
-      }
-      .stat-val {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--accent);
-      }
-      .stat-lbl {
-        font-size: 0.7rem;
-        color: var(--muted);
-        margin-top: 0.2rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-      }
+/* DIGIT HIGHLIGHT */
+.digit-ring {
+  font-family: 'JetBrains Mono', monospace;
+  display: inline-block;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: .8rem;
+  font-weight: 700;
+}
 
-      /* STEP INFO */
-      .step-info {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-left: 3px solid var(--accent);
-        border-radius: 10px;
-        padding: 0.85rem 1.1rem;
-        font-size: 0.875rem;
-        margin-bottom: 1rem;
-        min-height: 48px;
-        color: var(--text);
-      }
-      .step-info .hi {
-        font-weight: 700;
-      }
-      .step-info .hi-pivot {
-        color: var(--pivot-color);
-      }
-      .step-info .hi-left {
-        color: var(--left-color);
-      }
-      .step-info .hi-right {
-        color: var(--right-color);
-      }
-      .step-info .hi-done {
-        color: var(--accent3);
-      }
+/* LEGEND */
+.legend {
+  display: flex; gap: .75rem; flex-wrap: wrap;
+  padding: .75rem 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+.leg { display: flex; align-items: center; gap: .4rem; font-size: .75rem; color: var(--muted); }
+.leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
 
-      /* RECURSIVE TREE */
-      .tree-container {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 1.25rem;
-        overflow-x: auto;
-        margin-bottom: 1rem;
-      }
-      .tree-label {
-        font-size: 0.72rem;
-        font-weight: 600;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--muted);
-        margin-bottom: 1rem;
-      }
-      .tree-svg {
-        min-width: 100%;
-      }
+/* LOG */
+.log-box {
+  background: #060a12;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .78rem;
+  max-height: 180px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+.log-box::-webkit-scrollbar { width: 4px; }
+.log-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.log-entry { padding: .2rem 0; border-bottom: 1px solid rgba(26,37,64,.5); }
+.log-entry:last-child { border-bottom: none; }
+.log-step   { color: var(--muted); }
+.log-pass   { color: var(--accent); }
+.log-bucket { color: var(--accent2); }
+.log-done   { color: var(--accent3); font-weight: 700; }
 
-      /* COMPLEXITY PANEL */
-      .complexity-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1rem;
-      }
-      .cx-card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 1.1rem 1.25rem;
-        position: relative;
-        overflow: hidden;
-      }
-      .cx-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-      }
-      .cx-best::before {
-        background: var(--accent3);
-      }
-      .cx-avg::before {
-        background: var(--accent);
-      }
-      .cx-worst::before {
-        background: var(--warn);
-      }
-      .cx-title {
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--muted);
-        margin-bottom: 0.5rem;
-      }
-      .cx-val {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 1.4rem;
-        font-weight: 700;
-      }
-      .cx-best .cx-val {
-        color: var(--accent3);
-      }
-      .cx-avg .cx-val {
-        color: var(--accent);
-      }
-      .cx-worst .cx-val {
-        color: var(--warn);
-      }
-      .cx-desc {
-        font-size: 0.8rem;
-        color: var(--muted);
-        margin-top: 0.4rem;
-        line-height: 1.5;
-      }
+/* STATS */
+.stats-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: .75rem; margin-bottom: 1rem;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: .85rem 1rem;
+  text-align: center;
+}
+.stat-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--accent);
+}
+.stat-lbl { font-size: .7rem; color: var(--muted); margin-top: .2rem; text-transform: uppercase; letter-spacing: .08em; }
 
-      /* CHART */
-      .chart-wrap {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 1.25rem;
-        margin-bottom: 1rem;
-      }
-      .chart-label {
-        font-size: 0.72rem;
-        font-weight: 600;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--muted);
-        margin-bottom: 1rem;
-      }
-      canvas {
-        width: 100% !important;
-      }
+/* STEP INFO */
+.step-info {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  padding: .85rem 1.1rem;
+  font-size: .875rem;
+  margin-bottom: 1rem;
+  min-height: 48px;
+  color: var(--text);
+}
+.step-info .hi { font-weight: 700; }
+.step-info .hi-pass  { color: var(--accent); }
+.step-info .hi-digit { color: var(--accent2); }
+.step-info .hi-done  { color: var(--accent3); }
 
-      /* PROGRESS */
-      .progress-bar-wrap {
-        background: var(--border);
-        border-radius: 99px;
-        height: 4px;
-        margin-bottom: 1rem;
-        overflow: hidden;
-      }
-      .progress-bar-fill {
-        height: 100%;
-        background: linear-gradient(90deg, var(--accent2), var(--accent));
-        border-radius: 99px;
-        transition: width 0.3s;
-        width: 0%;
-      }
+/* PROGRESS */
+.progress-bar-wrap {
+  background: var(--border);
+  border-radius: 99px;
+  height: 4px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  border-radius: 99px;
+  transition: width .3s;
+  width: 0%;
+}
 
-      /* RESPONSIVE */
-      @media (max-width: 600px) {
-        .controls {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        input[type="text"] {
-          width: 100%;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <div class="header-badge">⚡ Simulasi Interaktif</div>
-      <h1>QuickSort Visualizer</h1>
-      <p>
-        Simulasi langkah-demi-langkah · Pohon rekursi · Analisis kompleksitas
-      </p>
-    </header>
+/* COMPLEXITY */
+.complexity-cards {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem; margin-bottom: 1rem;
+}
+.cx-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+.cx-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.cx-best::before  { background: var(--accent3); }
+.cx-avg::before   { background: var(--accent); }
+.cx-worst::before { background: var(--warn); }
+.cx-title { font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .5rem; }
+.cx-val { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 700; }
+.cx-best .cx-val  { color: var(--accent3); }
+.cx-avg .cx-val   { color: var(--accent); }
+.cx-worst .cx-val { color: var(--warn); }
+.cx-desc { font-size: .8rem; color: var(--muted); margin-top: .4rem; line-height: 1.5; }
 
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('sim')">
-        🎬 Simulasi Sorting
-      </button>
-      <button class="tab-btn" onclick="switchTab('tree')">
-        🌳 Pohon Rekursi
-      </button>
-      <button class="tab-btn" onclick="switchTab('complexity')">
-        📊 Kompleksitas
-      </button>
+.chart-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.chart-label { font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+
+/* PASS TRACKER */
+.pass-tracker {
+  display: flex; gap: .5rem; flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.pass-badge {
+  padding: .3rem .75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: var(--muted);
+  background: var(--surface);
+  transition: all .3s;
+}
+.pass-badge.done   { border-color: var(--accent3); color: var(--accent3); background: rgba(52,211,153,.08); }
+.pass-badge.active { border-color: var(--accent); color: var(--bg); background: var(--accent); }
+
+/* ALGO STEPS (tree tab) */
+.algo-steps { margin-bottom: 1rem; }
+.algo-step {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: 8px;
+  padding: .75rem 1rem;
+  margin-bottom: .5rem;
+  font-size: .85rem;
+  color: var(--muted);
+  transition: all .3s;
+}
+.algo-step.active { border-left-color: var(--accent); color: var(--text); background: rgba(167,139,250,.05); }
+.algo-step.done   { border-left-color: var(--accent3); color: var(--accent3); }
+.algo-step-num { font-family: 'JetBrains Mono', monospace; font-size: .75rem; font-weight: 700; margin-right: .5rem; }
+
+@media(max-width:600px) {
+  .controls { flex-direction: column; align-items: stretch; }
+  input[type="text"] { width: 100%; }
+  .buckets-grid { grid-template-columns: repeat(5, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">⚡ Simulasi Interaktif</div>
+  <h1>RadixSort Visualizer</h1>
+  <p>Simulasi langkah-demi-langkah · Bucket per digit · Analisis kompleksitas</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('sim',event)">🎬 Simulasi Sorting</button>
+  <button class="tab-btn" onclick="switchTab('bucket',event)">🪣 Alur Bucket</button>
+  <button class="tab-btn" onclick="switchTab('complexity',event)">📊 Kompleksitas</button>
+</div>
+
+<main>
+
+  <!-- ═══ TAB 1: SIMULASI ═══ -->
+  <div class="sim-panel active" id="panel-sim">
+    <div class="controls">
+      <span class="ctrl-label">Array</span>
+      <input type="text" id="input-array" value="170, 45, 75, 90, 802, 24, 2, 66" placeholder="Masukkan angka, pisah koma">
+      <button class="btn btn-secondary" onclick="randomArray()">🎲 Acak</button>
+      <button class="btn btn-primary" onclick="startSim()">▶ Mulai</button>
+      <button class="btn btn-warn" onclick="resetSim()">↺ Reset</button>
+      <div class="speed-wrap">
+        <span class="ctrl-label">Kecepatan</span>
+        <input type="range" id="speed" min="100" max="1200" value="700" step="100">
+      </div>
     </div>
 
-    <main>
-      <!-- ═══════════════════════════════ TAB 1: SIMULASI ═══════════════════════════════ -->
-      <div class="sim-panel active" id="panel-sim">
-        <div class="controls">
-          <span class="ctrl-label">Array</span>
-          <input
-            type="text"
-            id="input-array"
-            value="8, 3, 1, 7, 5, 2, 4, 6"
-            placeholder="Masukkan angka, pisah koma"
-          />
-          <button class="btn btn-secondary" onclick="randomArray()">
-            🎲 Acak
-          </button>
-          <button class="btn btn-primary" onclick="startSim()">▶ Mulai</button>
-          <button class="btn btn-warn" onclick="resetSim()">↺ Reset</button>
-          <div class="speed-wrap">
-            <span class="ctrl-label">Kecepatan</span>
-            <input
-              type="range"
-              id="speed"
-              min="100"
-              max="1200"
-              value="700"
-              step="100"
-            />
-          </div>
-        </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val" id="stat-pass">0</div><div class="stat-lbl">Pass Saat Ini</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-digits">0</div><div class="stat-lbl">Jumlah Pass</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-ops">0</div><div class="stat-lbl">Operasi</div></div>
+      <div class="stat-card"><div class="stat-val" id="stat-maxval">0</div><div class="stat-lbl">Nilai Maks</div></div>
+    </div>
 
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-val" id="stat-steps">0</div>
-            <div class="stat-lbl">Langkah</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-val" id="stat-comparisons">0</div>
-            <div class="stat-lbl">Partisi</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-val" id="stat-sorted">0</div>
-            <div class="stat-lbl">Terurut</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-val" id="stat-depth">0</div>
-            <div class="stat-lbl">Kedalaman</div>
-          </div>
-        </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
 
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill" id="progress-fill"></div>
-        </div>
+    <div id="pass-tracker" class="pass-tracker"></div>
 
-        <div class="step-info" id="step-info">
-          Masukkan array dan tekan ▶ Mulai untuk memulai simulasi.
-        </div>
+    <div class="step-info" id="step-info">Masukkan array dan tekan ▶ Mulai untuk memulai simulasi.</div>
 
-        <div class="array-stage">
-          <div class="stage-label">Visualisasi Array</div>
-          <div class="bar-container" id="bar-container">
-            <div
-              style="color: var(--muted); font-size: 0.85rem; padding-top: 2rem"
-            >
-              Belum ada data — masukkan array dan klik Mulai.
-            </div>
-          </div>
-        </div>
-
-        <div class="legend">
-          <div class="leg">
-            <div
-              class="leg-dot"
-              style="background: #1e3a5f; border: 1px solid #1e3a5f"
-            ></div>
-            Default
-          </div>
-          <div class="leg">
-            <div class="leg-dot" style="background: var(--pivot-color)"></div>
-            Pivot
-          </div>
-          <div class="leg">
-            <div class="leg-dot" style="background: var(--left-color)"></div>
-            Partisi Kiri
-          </div>
-          <div class="leg">
-            <div class="leg-dot" style="background: var(--right-color)"></div>
-            Partisi Kanan
-          </div>
-          <div class="leg">
-            <div class="leg-dot" style="background: var(--sorted-color)"></div>
-            Terurut
-          </div>
-        </div>
-
-        <div class="log-box" id="log-box">
-          <div class="log-entry log-step">
-            — Log simulasi akan muncul di sini —
-          </div>
-        </div>
+    <div class="array-stage">
+      <div class="stage-label">Visualisasi Array</div>
+      <div class="bar-container" id="bar-container">
+        <div style="color:var(--muted);font-size:.85rem;padding-top:2rem;">Belum ada data — masukkan array dan klik Mulai.</div>
       </div>
+    </div>
 
-      <!-- ═══════════════════════════════ TAB 2: POHON REKURSI ═══════════════════════════════ -->
-      <div class="sim-panel" id="panel-tree">
-        <div class="controls">
-          <span class="ctrl-label">Array</span>
-          <input
-            type="text"
-            id="input-tree"
-            value="8, 3, 1, 7, 5, 2, 4, 6"
-            placeholder="Masukkan angka"
-          />
-          <button class="btn btn-primary" onclick="buildTree()">
-            🌳 Bangun Pohon
-          </button>
-          <button class="btn btn-secondary" onclick="randomTree()">
-            🎲 Acak
-          </button>
-        </div>
+    <div class="legend" id="digit-legend">
+      <div class="leg"><div class="leg-dot" style="background:#2a1a4e;border:1px solid #2a1a4e"></div> Default</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--active-color)"></div> Sedang Diproses</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--sorted-color)"></div> Terurut ✓</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--digit-0)"></div> Digit 0</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--digit-3)"></div> Digit 3</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--digit-7)"></div> Digit 7</div>
+    </div>
 
-        <div class="step-info" id="tree-info">
-          Tekan "Bangun Pohon" untuk melihat struktur rekursi QuickSort.
-        </div>
+    <div class="log-box" id="log-box">
+      <div class="log-entry log-step">— Log simulasi akan muncul di sini —</div>
+    </div>
+  </div>
 
-        <div class="tree-container">
-          <div class="tree-label">Pohon Rekursi QuickSort</div>
-          <svg
-            id="tree-svg"
-            style="display: block; overflow: visible"
-            height="400"
-          ></svg>
-        </div>
+  <!-- ═══ TAB 2: ALUR BUCKET ═══ -->
+  <div class="sim-panel" id="panel-bucket">
+    <div class="controls">
+      <span class="ctrl-label">Array</span>
+      <input type="text" id="input-bucket" value="170, 45, 75, 90, 802, 24, 2, 66" placeholder="Masukkan angka">
+      <button class="btn btn-primary" onclick="runBucketDemo()">🪣 Jalankan Demo</button>
+      <button class="btn btn-secondary" onclick="randomBucket()">🎲 Acak</button>
+    </div>
 
-        <div class="legend">
-          <div class="leg">
-            <div class="leg-dot" style="background: var(--pivot-color)"></div>
-            Pivot (dipisahkan)
-          </div>
-          <div class="leg">
-            <div class="leg-dot" style="background: var(--left-color)"></div>
-            Sub-array kiri
-          </div>
-          <div class="leg">
-            <div class="leg-dot" style="background: var(--right-color)"></div>
-            Sub-array kanan
-          </div>
-          <div class="leg">
-            <div class="leg-dot" style="background: var(--accent3)"></div>
-            Sorted (leaf)
-          </div>
-        </div>
+    <div class="step-info" id="bucket-info">Tekan "Jalankan Demo" untuk melihat isi bucket di setiap pass.</div>
+
+    <div id="bucket-pass-selector" class="pass-tracker" style="justify-content:center;"></div>
+
+    <div class="buckets-wrap">
+      <div class="stage-label">Bucket (digit 0–9)</div>
+      <div class="buckets-grid" id="buckets-grid">
+        <!-- generated -->
       </div>
+    </div>
 
-      <!-- ═══════════════════════════════ TAB 3: KOMPLEKSITAS ═══════════════════════════════ -->
-      <div class="sim-panel" id="panel-complexity">
-        <div class="complexity-cards">
-          <div class="cx-card cx-best">
-            <div class="cx-title">Best Case</div>
-            <div class="cx-val">O(n log n)</div>
-            <div class="cx-desc">
-              Pivot selalu membagi array menjadi dua bagian seimbang. Kedalaman
-              rekursi = log₂ n.
-            </div>
-          </div>
-          <div class="cx-card cx-avg">
-            <div class="cx-title">Average Case</div>
-            <div class="cx-val">O(n log n)</div>
-            <div class="cx-desc">
-              Rata-rata pivot membagi cukup seimbang. Performa ini terjadi di
-              sebagian besar kasus nyata.
-            </div>
-          </div>
-          <div class="cx-card cx-worst">
-            <div class="cx-title">Worst Case</div>
-            <div class="cx-val">O(n²)</div>
-            <div class="cx-desc">
-              Pivot selalu elemen terkecil/terbesar (array sudah terurut).
-              Rekursi sedalam n level.
-            </div>
-          </div>
-        </div>
+    <div class="algo-steps" id="algo-steps">
+      <div class="algo-step"><span class="algo-step-num">01</span>Ambil digit paling kanan (satuan) dari setiap elemen.</div>
+      <div class="algo-step"><span class="algo-step-num">02</span>Tempatkan elemen ke dalam bucket 0–9 berdasarkan digit tersebut.</div>
+      <div class="algo-step"><span class="algo-step-num">03</span>Kumpulkan semua elemen dari bucket 0 → 9 secara berurutan.</div>
+      <div class="algo-step"><span class="algo-step-num">04</span>Ulangi untuk digit puluhan, ratusan, dst., hingga digit terbesar diproses.</div>
+      <div class="algo-step"><span class="algo-step-num">05</span>Setelah semua pass selesai, array terurut sepenuhnya.</div>
+    </div>
+  </div>
 
-        <div class="chart-wrap">
-          <div class="chart-label">
-            Perbandingan Pertumbuhan Operasi per Ukuran Input (n)
-          </div>
-          <canvas id="cx-chart" height="280"></canvas>
-        </div>
-
-        <div class="controls" style="margin-bottom: 1rem">
-          <span class="ctrl-label">Simulasikan pada n =</span>
-          <input
-            type="range"
-            id="n-slider"
-            min="4"
-            max="20"
-            value="8"
-            step="1"
-            oninput="updateNSim(this.value)"
-          />
-          <span
-            id="n-val"
-            style="
-              font-family: &quot;JetBrains Mono&quot;, monospace;
-              color: var(--accent);
-              font-size: 0.9rem;
-              min-width: 24px;
-            "
-            >8</span
-          >
-          <button class="btn btn-primary" onclick="runNSim()">Hitung</button>
-        </div>
-
-        <div class="stats-row" id="n-stats">
-          <div class="stat-card">
-            <div class="stat-val" id="ns-n">8</div>
-            <div class="stat-lbl">n (input)</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-val" id="ns-nlogn" style="color: var(--accent3)">
-              —
-            </div>
-            <div class="stat-lbl">n log₂ n</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-val" id="ns-n2" style="color: var(--warn)">—</div>
-            <div class="stat-lbl">n²</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-val" id="ns-ratio" style="color: var(--accent2)">
-              —
-            </div>
-            <div class="stat-lbl">Rasio n²/nlogn</div>
-          </div>
-        </div>
-
-        <div class="chart-wrap">
-          <div class="chart-label">
-            Diagram Tingkat Rekursi — Best Case (n=8)
-          </div>
-          <div
-            style="
-              font-family: &quot;JetBrains Mono&quot;, monospace;
-              font-size: 0.82rem;
-              line-height: 2.1;
-              padding: 0.5rem 0;
-            "
-            id="recursion-diagram"
-          >
-            <div style="color: var(--muted)">
-              Level 0:
-              <span style="color: var(--accent)">[_ _ _ _ _ _ _ _]</span> → 8
-              elemen
-            </div>
-            <div style="color: var(--muted)">
-              Level 1: <span style="color: var(--accent)">[_ _ _ _]</span>
-              <span style="color: var(--pivot-color)">[pivot]</span>
-              <span style="color: var(--accent)">[_ _ _ _]</span> → 8 elemen
-            </div>
-            <div style="color: var(--muted)">
-              Level 2: <span style="color: var(--accent)">[__][__]</span>
-              <span style="color: var(--pivot-color)">[p][p]</span>
-              <span style="color: var(--accent)">[__][__]</span> → 8 elemen
-            </div>
-            <div style="color: var(--accent3); margin-top: 0.3rem">
-              ↑ log₂(8) = 3 level → 8 × 3 = 24 operasi = O(n log n) ✅
-            </div>
-          </div>
-        </div>
+  <!-- ═══ TAB 3: KOMPLEKSITAS ═══ -->
+  <div class="sim-panel" id="panel-complexity">
+    <div class="complexity-cards">
+      <div class="cx-card cx-best">
+        <div class="cx-title">Best Case</div>
+        <div class="cx-val">O(nk)</div>
+        <div class="cx-desc">n = jumlah elemen, k = jumlah digit (pass). Ketika semua angka pendek dan seimbang.</div>
       </div>
-    </main>
+      <div class="cx-card cx-avg">
+        <div class="cx-title">Average Case</div>
+        <div class="cx-val">O(nk)</div>
+        <div class="cx-desc">Radix Sort selalu O(nk) — tidak bergantung pada susunan awal data.</div>
+      </div>
+      <div class="cx-card cx-worst">
+        <div class="cx-title">Worst Case</div>
+        <div class="cx-val">O(nk)</div>
+        <div class="cx-desc">k bisa besar jika angka sangat panjang (banyak digit). Namun dalam praktik, k konstan atau kecil.</div>
+      </div>
+    </div>
 
-    <script>
-      // ═══════════════ UTILITIES ═══════════════
-      function parseArray(id) {
-        const val = document.getElementById(id).value;
-        return val
-          .split(",")
-          .map((s) => parseInt(s.trim()))
-          .filter((n) => !isNaN(n))
-          .slice(0, 16);
+    <div class="chart-wrap">
+      <div class="chart-label">Perbandingan Pertumbuhan: Radix O(nk) vs QuickSort O(n log n) vs Bubble O(n²)</div>
+      <canvas id="cx-chart" height="280"></canvas>
+    </div>
+
+    <div class="controls" style="margin-bottom:1rem;">
+      <span class="ctrl-label">Simulasikan pada n =</span>
+      <input type="range" id="n-slider" min="4" max="20" value="8" step="1" oninput="updateNSim(this.value)">
+      <span id="n-val" style="font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:.9rem;min-width:24px">8</span>
+      <span class="ctrl-label">k =</span>
+      <input type="range" id="k-slider" min="1" max="6" value="2" step="1" oninput="updateKSim(this.value)">
+      <span id="k-val" style="font-family:'JetBrains Mono',monospace;color:var(--accent2);font-size:.9rem;min-width:24px">2</span>
+      <button class="btn btn-primary" onclick="runNSim()">Hitung</button>
+    </div>
+
+    <div class="stats-row" id="n-stats">
+      <div class="stat-card"><div class="stat-val" id="ns-n">8</div><div class="stat-lbl">n (input)</div></div>
+      <div class="stat-card"><div class="stat-val" id="ns-nk" style="color:var(--accent)">—</div><div class="stat-lbl">n×k (Radix)</div></div>
+      <div class="stat-card"><div class="stat-val" id="ns-nlogn" style="color:var(--accent3)">—</div><div class="stat-lbl">n log₂ n</div></div>
+      <div class="stat-card"><div class="stat-val" id="ns-n2" style="color:var(--warn)">—</div><div class="stat-lbl">n² (Bubble)</div></div>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-label">Mengapa Radix Sort Lebih Baik?</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:2.2;padding:.5rem 0;">
+        <div style="color:var(--muted)">Radix Sort adalah <span style="color:var(--accent)">non-comparison sort</span> — tidak membandingkan elemen satu sama lain.</div>
+        <div style="color:var(--muted)">Setiap pass hanya mendistribusikan ke <span style="color:var(--accent2)">10 bucket (0–9)</span>, lalu mengumpulkan ulang.</div>
+        <div style="color:var(--muted)">Total operasi = <span style="color:var(--accent)">k × n</span>, di mana k = jumlah digit angka terbesar.</div>
+        <div style="color:var(--accent3);margin-top:.4rem">✅ Stabil (urutan elemen sama-nilai dipertahankan)</div>
+        <div style="color:var(--warn);margin-top:.2rem">⚠️ Butuh memori tambahan O(n+k) untuk bucket</div>
+        <div style="color:var(--muted);margin-top:.2rem">⚡ Sangat efisien untuk data integer atau string dengan panjang tetap</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ═══════════ UTILITIES ═══════════
+function parseArr(id) {
+  return document.getElementById(id).value
+    .split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n) && n >= 0).slice(0, 14);
+}
+function rndArr(n=8) {
+  return Array.from({length:n}, () => Math.floor(Math.random()*900)+10);
+}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function getDelay() { return 1300 - parseInt(document.getElementById('speed').value); }
+
+function switchTab(tab, e) {
+  document.querySelectorAll('.sim-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  if(e && e.target) e.target.classList.add('active');
+  if(tab==='complexity') drawComplexityChart();
+}
+
+function addLog(html) {
+  const box = document.getElementById('log-box');
+  const d = document.createElement('div');
+  d.className = 'log-entry';
+  d.innerHTML = html;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+function setInfo(html) { document.getElementById('step-info').innerHTML = html; }
+
+// Digit colors
+const DIGIT_COLORS = ['#f87171','#fb923c','#fbbf24','#34d399','#38bdf8','#818cf8','#a78bfa','#f472b6','#e879f9','#94a3b8'];
+
+// ═══════════ RENDER BARS ═══════════
+function renderBars(arr, classes) {
+  const container = document.getElementById('bar-container');
+  const maxVal = Math.max(...arr, 1);
+  container.innerHTML = '';
+  arr.forEach((v, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'bar ' + (classes[i] || 'b-default');
+    bar.style.height = Math.max(8, (v / maxVal) * 100) + '%';
+    bar.setAttribute('data-val', v);
+    container.appendChild(bar);
+  });
+}
+
+// ═══════════ TAB 1: SIMULASI ═══════════
+let simRunning = false;
+
+function randomArray() {
+  document.getElementById('input-array').value = rndArr().join(', ');
+}
+
+function resetSim() {
+  simRunning = false;
+  document.getElementById('bar-container').innerHTML = '<div style="color:var(--muted);font-size:.85rem;padding-top:2rem;">Reset — masukkan array dan klik Mulai.</div>';
+  setInfo('Reset. Masukkan array dan tekan ▶ Mulai.');
+  document.getElementById('log-box').innerHTML = '<div class="log-entry log-step">— Log dibersihkan —</div>';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('pass-tracker').innerHTML = '';
+  ['stat-pass','stat-digits','stat-ops','stat-maxval'].forEach(id => document.getElementById(id).textContent='0');
+}
+
+async function startSim() {
+  if(simRunning) return;
+  simRunning = true;
+  document.getElementById('log-box').innerHTML = '';
+
+  let arr = parseArr('input-array');
+  if(arr.length < 2) { alert('Masukkan minimal 2 angka non-negatif!'); simRunning=false; return; }
+
+  const n = arr.length;
+  const maxVal = Math.max(...arr);
+  const numDigits = maxVal.toString().length;
+
+  document.getElementById('stat-maxval').textContent = maxVal;
+  document.getElementById('stat-digits').textContent = numDigits;
+
+  // Build pass badges
+  const tracker = document.getElementById('pass-tracker');
+  tracker.innerHTML = '';
+  for(let d=0; d<numDigits; d++) {
+    const b = document.createElement('div');
+    b.className = 'pass-badge';
+    b.id = 'pass-badge-'+d;
+    b.textContent = `Pass ${d+1}: digit ke-${d+1}`;
+    tracker.appendChild(b);
+  }
+
+  addLog(`<span class="log-step">▶ Mulai RadixSort · n=${n} · max=${maxVal} · ${numDigits} pass diperlukan</span>`);
+  setInfo(`Array: <span class="hi">[${arr.join(', ')}]</span> · Nilai maks: <span class="hi hi-pass">${maxVal}</span> · Total pass: <span class="hi hi-digit">${numDigits}</span>`);
+
+  let ops = 0;
+  let classes = new Array(n).fill('b-default');
+  renderBars(arr, classes);
+  await sleep(getDelay());
+
+  for(let pass=0; pass<numDigits && simRunning; pass++) {
+    // Activate badge
+    document.getElementById('pass-badge-'+pass).className = 'pass-badge active';
+    document.getElementById('stat-pass').textContent = pass+1;
+
+    const exp = Math.pow(10, pass);
+    const passName = pass===0?'satuan':pass===1?'puluhan':pass===2?'ratusan':'digit ke-'+(pass+1);
+
+    addLog(`<span class="log-pass">═══ Pass ${pass+1} — digit ${passName} ═══</span>`);
+    setInfo(`Pass <span class="hi hi-pass">${pass+1}/${numDigits}</span> — menyortir berdasarkan digit <span class="hi hi-digit">${passName}</span>`);
+
+    // Highlight which digit we're inspecting
+    classes = arr.map(v => {
+      const d = Math.floor(v/exp)%10;
+      return 'b-digit-'+d;
+    });
+    renderBars(arr, classes);
+    await sleep(getDelay());
+    if(!simRunning) break;
+
+    // Build buckets
+    const buckets = Array.from({length:10}, ()=>[]);
+    for(let i=0; i<n; i++) {
+      if(!simRunning) break;
+      const digit = Math.floor(arr[i]/exp)%10;
+      buckets[digit].push(arr[i]);
+      ops++;
+
+      // Highlight current bar
+      const tmp = [...classes];
+      tmp[i] = 'b-active';
+      renderBars(arr, tmp);
+      await sleep(getDelay()*0.4);
+      renderBars(arr, classes);
+    }
+    if(!simRunning) break;
+
+    // Log buckets
+    let bucketSummary = buckets.map((b,i)=> b.length ? `<span style="color:${DIGIT_COLORS[i]}">[${i}]:[${b.join(',')}]</span>` : `<span style="color:#1a2540">[${i}]:[]</span>`).join(' ');
+    addLog(`<span class="log-bucket">Bucket → ${bucketSummary}</span>`);
+    setInfo(`Mengumpulkan kembali dari bucket 0 → 9 <span style="font-size:.75rem;color:var(--muted)">Pass ${pass+1}</span>`);
+    await sleep(getDelay());
+    if(!simRunning) break;
+
+    // Collect from buckets
+    let idx=0;
+    for(let d=0;d<10;d++) {
+      for(const val of buckets[d]) {
+        arr[idx++] = val;
+        ops++;
       }
-      function randomArr(n = 8) {
-        return Array.from(
-          { length: n },
-          () => Math.floor(Math.random() * 30) + 1,
-        );
-      }
-      function switchTab(tab) {
-        document
-          .querySelectorAll(".sim-panel")
-          .forEach((p) => p.classList.remove("active"));
-        document
-          .querySelectorAll(".tab-btn")
-          .forEach((b) => b.classList.remove("active"));
-        document.getElementById("panel-" + tab).classList.add("active");
-        event.target.classList.add("active");
-        if (tab === "complexity") drawComplexityChart();
-      }
-      function sleep(ms) {
-        return new Promise((r) => setTimeout(r, ms));
-      }
+    }
+    document.getElementById('stat-ops').textContent = ops;
 
-      // ═══════════════ TAB 1: SIMULASI ═══════════════
-      let simRunning = false;
-      let simArr = [];
-      let steps = 0,
-        partitions = 0,
-        sortedCount = 0,
-        maxDepth = 0;
+    // Partial sort state — color by digit value
+    classes = arr.map(v => { const d=Math.floor(v/exp)%10; return 'b-digit-'+d; });
+    renderBars(arr, classes);
+    await sleep(getDelay()*0.5);
 
-      function randomArray() {
-        const arr = randomArr();
-        document.getElementById("input-array").value = arr.join(", ");
-      }
+    // Mark badge done
+    document.getElementById('pass-badge-'+pass).className = 'pass-badge done';
+    document.getElementById('progress-fill').style.width = ((pass+1)/numDigits*100)+'%';
+    addLog(`<span class="log-step">Pass ${pass+1} selesai: [${arr.join(', ')}]</span>`);
+  }
 
-      function resetSim() {
-        simRunning = false;
-        steps = 0;
-        partitions = 0;
-        sortedCount = 0;
-        maxDepth = 0;
-        updateStats();
-        document.getElementById("bar-container").innerHTML =
-          '<div style="color:var(--muted);font-size:.85rem;padding-top:2rem;">Reset — masukkan array dan klik Mulai.</div>';
-        document.getElementById("step-info").innerHTML =
-          "Reset. Masukkan array dan tekan ▶ Mulai.";
-        document.getElementById("log-box").innerHTML =
-          '<div class="log-entry log-step">— Log dibersihkan —</div>';
-        document.getElementById("progress-fill").style.width = "0%";
-      }
+  if(simRunning) {
+    classes = new Array(n).fill('b-sorted');
+    renderBars(arr, classes);
+    document.getElementById('progress-fill').style.width = '100%';
+    setInfo(`<span class="hi hi-done">✅ Array terurut: [${arr.join(', ')}]</span>`);
+    addLog(`<span class="log-done">✅ Selesai! Array terurut: [${arr.join(', ')}] · Total operasi: ${ops}</span>`);
+  }
+  simRunning = false;
+}
 
-      function updateStats() {
-        document.getElementById("stat-steps").textContent = steps;
-        document.getElementById("stat-comparisons").textContent = partitions;
-        document.getElementById("stat-sorted").textContent = sortedCount;
-        document.getElementById("stat-depth").textContent = maxDepth;
-      }
+// ═══════════ TAB 2: BUCKET DEMO ═══════════
+let bucketData = null;
 
-      function addLog(html) {
-        const box = document.getElementById("log-box");
-        const div = document.createElement("div");
-        div.className = "log-entry";
-        div.innerHTML = html;
-        box.appendChild(div);
-        box.scrollTop = box.scrollHeight;
-      }
+function randomBucket() {
+  document.getElementById('input-bucket').value = rndArr().join(', ');
+}
 
-      function setInfo(html) {
-        document.getElementById("step-info").innerHTML = html;
-      }
+function renderBuckets(buckets, highlightDigit) {
+  const grid = document.getElementById('buckets-grid');
+  grid.innerHTML = '';
+  for(let d=0;d<10;d++) {
+    const cell = document.createElement('div');
+    cell.className = 'bucket' + (highlightDigit===d?' active-bucket':'');
+    cell.innerHTML = `<div class="bucket-header" style="color:${DIGIT_COLORS[d]}">${d}</div>`;
+    (buckets[d]||[]).forEach(v => {
+      const item = document.createElement('div');
+      item.className = 'bucket-item';
+      item.style.background = DIGIT_COLORS[d]+'22';
+      item.style.color = DIGIT_COLORS[d];
+      item.textContent = v;
+      cell.appendChild(item);
+    });
+    grid.appendChild(cell);
+  }
+}
 
-      function renderBars(arr, colors, sortedSet) {
-        const container = document.getElementById("bar-container");
-        const maxVal = Math.max(...arr, 1);
-        container.innerHTML = "";
-        arr.forEach((v, i) => {
-          const bar = document.createElement("div");
-          bar.className = "bar " + (colors[i] || "b-default");
-          bar.style.height = (v / maxVal) * 100 + "%";
-          bar.setAttribute("data-val", v);
-          container.appendChild(bar);
-        });
-      }
+function runBucketDemo() {
+  const arr = parseArr('input-bucket');
+  if(!arr.length) return;
+  const maxVal = Math.max(...arr);
+  const numDigits = maxVal.toString().length;
 
-      async function startSim() {
-        if (simRunning) return;
-        simRunning = true;
-        steps = 0;
-        partitions = 0;
-        sortedCount = 0;
-        maxDepth = 0;
-        document.getElementById("log-box").innerHTML = "";
+  // Pre-compute all passes
+  bucketData = [];
+  let cur = [...arr];
+  for(let pass=0;pass<numDigits;pass++) {
+    const exp = Math.pow(10, pass);
+    const buckets = Array.from({length:10},()=>[]);
+    cur.forEach(v => buckets[Math.floor(v/exp)%10].push(v));
+    const flat = buckets.flat();
+    bucketData.push({ pass, exp, buckets: buckets.map(b=>[...b]), arr: [...flat] });
+    cur = flat;
+  }
 
-        simArr = parseArray("input-array");
-        if (simArr.length < 2) {
-          alert("Masukkan minimal 2 angka!");
-          simRunning = false;
-          return;
-        }
+  // Build selector
+  const sel = document.getElementById('bucket-pass-selector');
+  sel.innerHTML = '';
+  bucketData.forEach((d,i) => {
+    const b = document.createElement('div');
+    b.className = 'pass-badge' + (i===0?' active':'');
+    b.textContent = `Pass ${i+1}`;
+    b.onclick = () => showBucketPass(i);
+    b.id = 'bsel-'+i;
+    sel.appendChild(b);
+  });
 
-        const arr = [...simArr];
-        const n = arr.length;
-        const colors = new Array(n).fill("b-default");
-        const sorted = new Set();
+  showBucketPass(0);
 
-        renderBars(arr, colors, sorted);
-        addLog(
-          '<span class="log-step">▶ Mulai QuickSort pada array: [' +
-            arr.join(", ") +
-            "]</span>",
-        );
-        setInfo(
-          'Memulai QuickSort... Array: <span class="hi">[' +
-            arr.join(", ") +
-            "]</span>",
-        );
+  const steps = document.querySelectorAll('.algo-step');
+  steps.forEach((s,i) => { s.className = 'algo-step' + (i<2?' active':''); });
 
-        await quicksortViz(arr, 0, n - 1, colors, sorted, 0);
+  document.getElementById('bucket-info').innerHTML =
+    `Array: <span class="hi">[${arr.join(', ')}]</span> · max=${maxVal} · <span class="hi hi-pass">${numDigits} pass</span> diperlukan`;
+}
 
-        // final: all sorted
-        for (let i = 0; i < n; i++) colors[i] = "b-sorted";
-        renderBars(arr, colors, sorted);
-        document.getElementById("progress-fill").style.width = "100%";
-        setInfo(
-          '<span class="hi hi-done">✅ Array terurut: [' +
-            arr.join(", ") +
-            "]</span>",
-        );
-        addLog(
-          '<span class="log-done">✅ Selesai! Array: [' +
-            arr.join(", ") +
-            "]</span>",
-        );
-        simRunning = false;
-      }
+function showBucketPass(idx) {
+  if(!bucketData) return;
+  document.querySelectorAll('[id^=bsel-]').forEach((b,i)=>b.className='pass-badge'+(i===idx?' active':''));
+  const d = bucketData[idx];
+  renderBuckets(d.buckets, -1);
+  document.getElementById('bucket-info').innerHTML =
+    `Pass <span class="hi hi-pass">${idx+1}</span> — digit ${idx===0?'satuan':idx===1?'puluhan':idx===2?'ratusan':'ke-'+(idx+1)} · Setelah collect: <span class="hi">[${d.arr.join(', ')}]</span>`;
+}
 
-      function getDelay() {
-        const v = parseInt(document.getElementById("speed").value);
-        return 1300 - v;
-      }
+// ═══════════ TAB 3: COMPLEXITY ═══════════
+function drawComplexityChart() {
+  const canvas = document.getElementById('cx-chart');
+  const W = canvas.offsetWidth || 640;
+  canvas.width = W; canvas.height = 280;
+  const H = 280;
+  const pad = {top:20,right:30,bottom:40,left:55};
+  const cw = W-pad.left-pad.right, ch = H-pad.top-pad.bottom;
+  const c = canvas.getContext('2d');
+  c.clearRect(0,0,W,H);
 
-      async function quicksortViz(arr, lo, hi, colors, sorted, depth) {
-        if (!simRunning) return;
-        if (lo >= hi) {
-          if (lo === hi) {
-            colors[lo] = "b-sorted";
-            sorted.add(lo);
-            sortedCount++;
-            updateStats();
-          }
-          return;
-        }
-        if (depth > maxDepth) {
-          maxDepth = depth;
-          updateStats();
-        }
+  const ns = [1,2,4,8,16,32,64,128];
+  const k = 2;
+  const nk    = ns.map(n => n*k);
+  const nlogn = ns.map(n => Math.max(n*Math.log2(n||1),1));
+  const n2    = ns.map(n => n*n);
 
-        steps++;
-        updateStats();
-        const n = arr.length;
+  const maxY = n2[n2.length-1];
+  const toX  = i => pad.left + (i/(ns.length-1))*cw;
+  const toY  = v => pad.top + ch - Math.min(v/maxY,1)*ch;
 
-        // Show current subarray
-        const subArr = arr.slice(lo, hi + 1);
-        const pivotIdx = lo + Math.floor((hi - lo) / 2);
-        const pivotVal = arr[pivotIdx];
+  // Grid
+  c.strokeStyle='#1a2540'; c.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=pad.top+(i/4)*ch;
+    c.beginPath(); c.moveTo(pad.left,y); c.lineTo(pad.left+cw,y); c.stroke();
+  }
 
-        // Color: current range = default, rest dimmed
-        for (let i = 0; i < n; i++) {
-          if (sorted.has(i)) colors[i] = "b-sorted";
-          else if (i < lo || i > hi) colors[i] = "b-default";
-          else colors[i] = "b-default";
-        }
-        colors[pivotIdx] = "b-pivot";
-        renderBars(arr, colors, sorted);
-        setInfo(
-          `Rekursi kedalaman <span class="hi">${depth}</span> · Sub-array [${lo}..${hi}] = <span class="hi">[${subArr.join(", ")}]</span> · Pivot = <span class="hi hi-pivot">${pivotVal}</span>`,
-        );
-        addLog(
-          `<span class="log-step">Kedalaman ${depth}:</span> <span class="log-pivot">pivot=${pivotVal}</span> pada [${subArr.join(", ")}]`,
-        );
-        await sleep(getDelay());
-        if (!simRunning) return;
+  // n² orange
+  c.beginPath(); c.strokeStyle='#fb923c'; c.lineWidth=2.5;
+  n2.forEach((v,i) => { i===0?c.moveTo(toX(i),toY(v)):c.lineTo(toX(i),toY(v)); }); c.stroke();
 
-        // Partition in-place (Lomuto-style for visualization)
-        let leftItems = [],
-          rightItems = [];
-        for (let i = lo; i <= hi; i++) {
-          if (i === pivotIdx) continue;
-          if (arr[i] < pivotVal) leftItems.push(i);
-          else rightItems.push(i);
-        }
+  // n log n green
+  c.beginPath(); c.strokeStyle='#34d399'; c.lineWidth=2.5;
+  nlogn.forEach((v,i) => { i===0?c.moveTo(toX(i),toY(v)):c.lineTo(toX(i),toY(v)); }); c.stroke();
 
-        // Color partition
-        leftItems.forEach((i) => (colors[i] = "b-left"));
-        rightItems.forEach((i) => (colors[i] = "b-right"));
-        renderBars(arr, colors, sorted);
-        setInfo(
-          `Partisi: <span class="hi hi-left">Kiri [${leftItems.map((i) => arr[i]).join(", ") || "—"}]</span> | <span class="hi hi-pivot">pivot=${pivotVal}</span> | <span class="hi hi-right">Kanan [${rightItems.map((i) => arr[i]).join(", ") || "—"}]</span>`,
-        );
-        addLog(
-          `<span class="log-left">kiri=[${leftItems.map((i) => arr[i]).join(", ") || "∅"}]</span> | <span class="log-pivot">pivot=${pivotVal}</span> | <span class="log-right">kanan=[${rightItems.map((i) => arr[i]).join(", ") || "∅"}]</span>`,
-        );
-        partitions++;
-        updateStats();
-        await sleep(getDelay());
-        if (!simRunning) return;
+  // n*k purple (radix)
+  c.beginPath(); c.strokeStyle='#a78bfa'; c.lineWidth=3;
+  nk.forEach((v,i) => { i===0?c.moveTo(toX(i),toY(v)):c.lineTo(toX(i),toY(v)); }); c.stroke();
 
-        // Rearrange array in-place for visualization
-        const newArr = [
-          ...arr.slice(0, lo),
-          ...leftItems.map((i) => arr[i]),
-          pivotVal,
-          ...rightItems.map((i) => arr[i]),
-          ...arr.slice(hi + 1),
-        ];
-        for (let i = 0; i < n; i++) arr[i] = newArr[i];
+  // X labels
+  c.fillStyle='#4b6080'; c.font='11px JetBrains Mono,monospace'; c.textAlign='center';
+  ns.forEach((n,i) => c.fillText(n, toX(i), H-10));
 
-        const newPivotIdx = lo + leftItems.length;
-        colors[newPivotIdx] = "b-sorted";
-        sorted.add(newPivotIdx);
-        sortedCount++;
+  // Line labels
+  c.textAlign='right';
+  c.fillStyle='#fb923c'; c.fillText('O(n²)', pad.left-4, toY(n2[n2.length-2]));
+  c.fillStyle='#34d399'; c.fillText('O(n log n)', pad.left-4, toY(nlogn[n2.length-2])+14);
+  c.fillStyle='#a78bfa'; c.fillText('O(nk)', pad.left-4, toY(nk[n2.length-2])+28);
+}
 
-        // Re-assign colors
-        for (let i = lo; i < newPivotIdx; i++) colors[i] = "b-left";
-        for (let i = newPivotIdx + 1; i <= hi; i++) colors[i] = "b-right";
-        renderBars(arr, colors, sorted);
-        updateStats();
-        document.getElementById("progress-fill").style.width =
-          (sorted.size / n) * 100 + "%";
-        await sleep(getDelay() * 0.6);
-        if (!simRunning) return;
+function updateNSim(v) { document.getElementById('n-val').textContent=v; }
+function updateKSim(v) { document.getElementById('k-val').textContent=v; }
 
-        // Recurse
-        await quicksortViz(arr, lo, newPivotIdx - 1, colors, sorted, depth + 1);
-        await quicksortViz(arr, newPivotIdx + 1, hi, colors, sorted, depth + 1);
-      }
+function runNSim() {
+  const n  = parseInt(document.getElementById('n-slider').value);
+  const k  = parseInt(document.getElementById('k-slider').value);
+  const nk   = n*k;
+  const nlogn= Math.round(n*Math.log2(n));
+  const n2   = n*n;
+  document.getElementById('ns-n').textContent    = n;
+  document.getElementById('ns-nk').textContent   = nk;
+  document.getElementById('ns-nlogn').textContent= nlogn;
+  document.getElementById('ns-n2').textContent   = n2;
+}
 
-      // ═══════════════ TAB 2: POHON REKURSI ═══════════════
-      function randomTree() {
-        const arr = randomArr();
-        document.getElementById("input-tree").value = arr.join(", ");
-      }
-
-      function buildTreeData(arr) {
-        if (!arr || arr.length === 0) return null;
-        if (arr.length === 1)
-          return { arr, pivot: arr[0], left: null, right: null, sorted: true };
-        const pivotIdx = Math.floor(arr.length / 2);
-        const pivot = arr[pivotIdx];
-        const left = arr.filter((x) => x < pivot);
-        const right = arr.filter((x) => x > pivot);
-        return {
-          arr,
-          pivot,
-          left: left.length ? buildTreeData(left) : null,
-          right: right.length ? buildTreeData(right) : null,
-          sorted: arr.length <= 1,
-        };
-      }
-
-      function treeSize(node) {
-        if (!node) return 0;
-        return 1 + treeSize(node.left) + treeSize(node.right);
-      }
-      function treeDepth(node) {
-        if (!node) return 0;
-        return 1 + Math.max(treeDepth(node.left), treeDepth(node.right));
-      }
-
-      function buildTree() {
-        const arr = parseArray("input-tree");
-        if (!arr.length) return;
-        const root = buildTreeData(arr);
-        const depth = treeDepth(root);
-        const W = Math.max(700, arr.length * 80);
-        const H = depth * 90 + 60;
-        const svg = document.getElementById("tree-svg");
-        svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-        svg.setAttribute("height", H);
-        svg.style.minWidth = W + "px";
-        svg.innerHTML = "";
-        drawNode(svg, root, W / 2, 40, W / 2, 0, 0);
-        document.getElementById("tree-info").innerHTML =
-          `Pohon rekursi untuk <span class="hi">[${arr.join(", ")}]</span> · Kedalaman: <span class="hi">${depth}</span> · Pivot: elemen tengah`;
-      }
-
-      function drawNode(svg, node, x, y, parentX, parentY, depth) {
-        if (!node) return;
-        const label = node.arr.join(", ");
-        const isLeaf = !node.left && !node.right;
-        const boxW = Math.max(50, label.length * 8 + 20);
-        const boxH = 34;
-
-        // Line to parent
-        if (parentY > 0) {
-          const line = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "line",
-          );
-          line.setAttribute("x1", parentX);
-          line.setAttribute("y1", parentY + boxH / 2);
-          line.setAttribute("x2", x);
-          line.setAttribute("y2", y - boxH / 2);
-          line.setAttribute("stroke", "#1a2540");
-          line.setAttribute("stroke-width", "1.5");
-          svg.appendChild(line);
-        }
-
-        // Box
-        const rect = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "rect",
-        );
-        const fill = isLeaf ? "rgba(52,211,153,.15)" : "rgba(17,24,39,1)";
-        const stroke = isLeaf ? "#34d399" : "#1e3a5f";
-        rect.setAttribute("x", x - boxW / 2);
-        rect.setAttribute("y", y - boxH / 2);
-        rect.setAttribute("width", boxW);
-        rect.setAttribute("height", boxH);
-        rect.setAttribute("rx", "7");
-        rect.setAttribute("fill", fill);
-        rect.setAttribute("stroke", stroke);
-        rect.setAttribute("stroke-width", "1.5");
-        svg.appendChild(rect);
-
-        // Array text
-        const text = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "text",
-        );
-        text.setAttribute("x", x);
-        text.setAttribute("y", y - 4);
-        text.setAttribute("text-anchor", "middle");
-        text.setAttribute("font-family", "JetBrains Mono, monospace");
-        text.setAttribute("font-size", "11");
-        text.setAttribute("fill", isLeaf ? "#34d399" : "#94a3b8");
-        text.textContent = "[" + label + "]";
-        svg.appendChild(text);
-
-        // Pivot label
-        if (!isLeaf) {
-          const pt = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "text",
-          );
-          pt.setAttribute("x", x);
-          pt.setAttribute("y", y + 10);
-          pt.setAttribute("text-anchor", "middle");
-          pt.setAttribute("font-family", "JetBrains Mono, monospace");
-          pt.setAttribute("font-size", "9");
-          pt.setAttribute("fill", "#fb923c");
-          pt.textContent = "pivot=" + node.pivot;
-          svg.appendChild(pt);
-        }
-
-        // Recurse children
-        const spread = Math.max(80, 160 / (depth + 1));
-        const childY = y + 90;
-        if (node.left)
-          drawNode(svg, node.left, x - spread, childY, x, y, depth + 1);
-        if (node.right)
-          drawNode(svg, node.right, x + spread, childY, x, y, depth + 1);
-      }
-
-      // ═══════════════ TAB 3: KOMPLEKSITAS ═══════════════
-      let cxChart = null;
-      function drawComplexityChart() {
-        const ctx = document.getElementById("cx-chart").getContext("2d");
-        if (cxChart) {
-          cxChart.destroy();
-        }
-        const ns = [1, 2, 4, 8, 16, 32, 64, 128, 256];
-        const nlogn = ns.map((n) => n * Math.log2(n || 1));
-        const n2 = ns.map((n) => n * n);
-
-        // Simple canvas chart (no Chart.js dependency)
-        const canvas = document.getElementById("cx-chart");
-        canvas.width = canvas.offsetWidth || 600;
-        canvas.height = 280;
-        const W = canvas.width,
-          H = canvas.height;
-        const pad = { top: 20, right: 20, bottom: 40, left: 50 };
-        const cw = W - pad.left - pad.right,
-          ch = H - pad.top - pad.bottom;
-        const c = canvas.getContext("2d");
-        c.clearRect(0, 0, W, H);
-
-        const maxY = n2[n2.length - 1];
-        const toX = (i) => pad.left + (i / (ns.length - 1)) * cw;
-        const toY = (v) => pad.top + ch - (v / maxY) * ch;
-
-        // Grid
-        c.strokeStyle = "#1a2540";
-        c.lineWidth = 1;
-        for (let i = 0; i < 5; i++) {
-          const y = pad.top + (i / 4) * ch;
-          c.beginPath();
-          c.moveTo(pad.left, y);
-          c.lineTo(pad.left + cw, y);
-          c.stroke();
-        }
-
-        // n² line
-        c.beginPath();
-        c.strokeStyle = "#fb923c";
-        c.lineWidth = 2.5;
-        n2.forEach((v, i) => {
-          i === 0 ? c.moveTo(toX(i), toY(v)) : c.lineTo(toX(i), toY(v));
-        });
-        c.stroke();
-
-        // n log n line
-        c.beginPath();
-        c.strokeStyle = "#34d399";
-        c.lineWidth = 2.5;
-        nlogn.forEach((v, i) => {
-          i === 0 ? c.moveTo(toX(i), toY(v)) : c.lineTo(toX(i), toY(v));
-        });
-        c.stroke();
-
-        // Labels
-        c.fillStyle = "#4b6080";
-        c.font = "11px JetBrains Mono, monospace";
-        c.textAlign = "center";
-        ns.forEach((n, i) => {
-          c.fillText(n, toX(i), H - 10);
-        });
-        c.textAlign = "right";
-        c.fillStyle = "#fb923c";
-        c.fillText("O(n²)", pad.left - 5, toY(n2[n2.length - 2]));
-        c.fillStyle = "#34d399";
-        c.fillText("O(n log n)", pad.left - 5, toY(nlogn[n2.length - 2]) + 12);
-      }
-
-      function updateNSim(val) {
-        document.getElementById("n-val").textContent = val;
-      }
-      function runNSim() {
-        const n = parseInt(document.getElementById("n-slider").value);
-        const nlogn = Math.round(n * Math.log2(n));
-        const n2 = n * n;
-        document.getElementById("ns-n").textContent = n;
-        document.getElementById("ns-nlogn").textContent = nlogn;
-        document.getElementById("ns-n2").textContent = n2;
-        document.getElementById("ns-ratio").textContent =
-          (n2 / nlogn).toFixed(1) + "×";
-      }
-
-      // Init
-      document.addEventListener("DOMContentLoaded", () => {
-        runNSim();
-      });
-    </script>
-  </body>
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  runNSim();
+  // init empty buckets
+  renderBuckets(Array.from({length:10},()=>[]), -1);
+});
+</script>
+</body>
 </html>
